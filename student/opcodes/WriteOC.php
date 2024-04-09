@@ -19,16 +19,17 @@ class WriteOC implements IOpcodes
     public function __construct(OutputWriter $out)
     {
         $this->outWrite = $out;
+        $sym = null;
     }
 
-    public function Execute() : void
+    public function Execute() : int
     {
         if (is_string($this->sym))
         {
             $object = Tools::FindInFrame($this->sym);
             if ($object == null)
             {
-                throw new IntegrationException();
+                return 54;
             }
 
             switch ($object->Type)
@@ -46,7 +47,7 @@ class WriteOC implements IOpcodes
                     $this->outWrite->writeString("");
                     break;
             }
-            return;
+            return 0;
         }
 
 
@@ -66,5 +67,6 @@ class WriteOC implements IOpcodes
                 $this->outWrite->writeString("");
                 break;
         }
+        return 0;
     }
 }

@@ -10,17 +10,17 @@ use IPP\Student\VarClass;
 
 class DefvarOC implements IOpcodes
 {
-    public VarClass $Sym;
+    public VarClass $var;
 
-    public function Execute(): void
+    public function Execute(): int
     {
-        if(Tools::PushToFrame($this->Sym))
+        if(Tools::PushToFrame($this->var))
         {
-            return;
+            return 0;
         }
         else
         {
-            throw new IntegrationException();
+            return 54;
         }
     }
 }

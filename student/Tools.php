@@ -10,26 +10,21 @@ class Tools
     /**
      * @return array{0: FramesEnum, 1: string}
      */
-    public static function GetFrameAndName($child) : array
+    public static function GetFrameAndName($child): array
     {
         //Toto bude existovat vždycky ale compiler o tom neví
-        if ($child->length > 0 && $child->item(0) !== null)
-        {
+        if ($child->length > 0 && $child->item(0) !== null) {
             $rawFrame = $child->item(0)->nodeValue;
-            if ($rawFrame == null)
-            {
+            if ($rawFrame == null) {
                 return [FramesEnum::ERR, "err"];
             }
-        }
-        else
-        {
+        } else {
             //Nikdy by se to tady dostat nemělo
             return [FramesEnum::ERR, "err"];
         }
 
         $explode = explode('@', $rawFrame);
-        return match ($explode[0])
-        {
+        return match ($explode[0]) {
             "GF" => [FramesEnum::G, implode('@', array_slice($explode, 1))],
             "LF" => [FramesEnum::L, implode('@', array_slice($explode, 1))],
             "TF" => [FramesEnum::T, implode('@', array_slice($explode, 1))],
@@ -37,12 +32,11 @@ class Tools
         };
     }
 
-    public static function GetTypeAndValue($child) : array
+    public static function GetTypeAndValue($child): array
     {
         $type = $child->item(0)->getAttribute("type");
 
-        return match ($type)
-        {
+        return match ($type) {
             "string" => [DataTypeEnum::STRING, $child->item(0)->nodeValue],
             "int" => [DataTypeEnum::INT, $child->item(0)->nodeValue],
             "bool" => [DataTypeEnum::BOOL, $child->item(0)->nodeValue],
@@ -53,12 +47,10 @@ class Tools
     }
 
     //TODO - UDĚLAT TO PRO VŠECHNY TYPY FRAME
-    public static function FindInFrame(string $sym) : VarClass|null
+    public static function FindInFrame(string $sym): VarClass|null
     {
-        foreach (GlobalFrame::$Frame as $item)
-        {
-            if ($item->Name == $sym)
-            {
+        foreach (GlobalFrame::$Frame as $item) {
+            if ($item->Name == $sym) {
                 return $item;
             }
         }
@@ -66,12 +58,10 @@ class Tools
     }
 
     //TODO - UDĚLAT TO PRO VŠECHNY TYPY FRAME
-    public static function PushToFrame(VarClass $var) : bool
+    public static function PushToFrame(VarClass $var): bool
     {
-        foreach (GlobalFrame::$Frame as $item)
-        {
-            if ($item->Name == $var->Name)
-            {
+        foreach (GlobalFrame::$Frame as $item) {
+            if ($item->Name == $var->Name) {
                 return false;
             }
         }
@@ -80,4 +70,14 @@ class Tools
         return true;
     }
 
+    public static function TypeChecker(DataTypeEnum $type, mixed $value): bool
+    {
+        return match (gettype($value)) {
+            "integer" => $type === DataTypeEnum::INT,
+            "string" => $type === DataTypeEnum::STRING,
+            "boolean" => $type === DataTypeEnum::BOOL,
+            "NULL" => $type === DataTypeEnum::NIL,
+            default => false,
+        };
+    }
 }

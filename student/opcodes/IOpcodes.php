@@ -4,5 +4,5 @@ namespace IPP\Student\opcodes;
 
 interface IOpcodes
 {
-    public function Execute() : void;
+    public function Execute() : int;
 }
