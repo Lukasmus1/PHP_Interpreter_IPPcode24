@@ -1,0 +1,11 @@
+/vendor/
+/temp/
+/tmp/
+/examples/
+/student/
+/tests/
+/materials/
+is_it_ok.log
+*.zip
+/.vscode/
+/bin/
