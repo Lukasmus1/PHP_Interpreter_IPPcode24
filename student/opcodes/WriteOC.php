@@ -2,7 +2,6 @@
 
 namespace IPP\Student\opcodes;
 
-use IPP\Core\Exception\IntegrationException;
 use IPP\Core\Interface\OutputWriter;
 use IPP\Core\StreamWriter;
 use IPP\Student\enums\DataTypeEnum;
@@ -22,7 +21,7 @@ class WriteOC implements IOpcodes
         $sym = null;
     }
 
-    public function Execute() : int
+    public function Execute(int $index) : int
     {
         if (is_string($this->sym))
         {
@@ -35,13 +34,16 @@ class WriteOC implements IOpcodes
             switch ($object->Type)
             {
                 case DataTypeEnum::STRING:
-                    $this->outWrite->writeString($object->Value);
+                    $newString = preg_replace_callback('/\\\\(\d{3})/', function ($matches) {
+                        return mb_convert_encoding(pack('n', $matches[1]), 'UTF-8', 'UCS-2BE');
+                    }, (string)$object->Value);
+                    $this->outWrite->writeString($newString);
                     break;
                 case DataTypeEnum::INT:
                     $this->outWrite->writeInt($object->Value);
                     break;
                 case DataTypeEnum::BOOL:
-                    $this->outWrite->writeBool($object->Value);
+                    $this->outWrite->writeBool(filter_var($object->Value, FILTER_VALIDATE_BOOLEAN));
                     break;
                 case DataTypeEnum::NIL:
                     $this->outWrite->writeString("");
@@ -50,18 +52,19 @@ class WriteOC implements IOpcodes
             return 0;
         }
 
-
-
         switch ($this->sym->Type)
         {
             case DataTypeEnum::STRING:
-                $this->outWrite->writeString($this->sym->Value);
+                $newString = preg_replace_callback('/\\\\(\d{3})/', function ($matches) {
+                    return mb_convert_encoding(pack('n', $matches[1]), 'UTF-8', 'UCS-2BE');
+                }, (string)$this->sym->Value);
+                $this->outWrite->writeString($newString);
                 break;
             case DataTypeEnum::INT:
                 $this->outWrite->writeInt($this->sym->Value);
                 break;
             case DataTypeEnum::BOOL:
-                $this->outWrite->writeBool($this->sym->Value);
+                $this->outWrite->writeBool(filter_var($this->sym->Value, FILTER_VALIDATE_BOOLEAN));
                 break;
             case DataTypeEnum::NIL:
                 $this->outWrite->writeString("");

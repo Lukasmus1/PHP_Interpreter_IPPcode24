@@ -49,7 +49,7 @@ class Tools
     //TODO - UDĚLAT TO PRO VŠECHNY TYPY FRAME
     public static function FindInFrame(string $sym): VarClass|null
     {
-        foreach (GlobalFrame::$Frame as $item) {
+        foreach (Frames::$GlobalFrame as $item) {
             if ($item->Name == $sym) {
                 return $item;
             }
@@ -60,24 +60,31 @@ class Tools
     //TODO - UDĚLAT TO PRO VŠECHNY TYPY FRAME
     public static function PushToFrame(VarClass $var): bool
     {
-        foreach (GlobalFrame::$Frame as $item) {
+        foreach (Frames::$GlobalFrame as $item) {
             if ($item->Name == $var->Name) {
                 return false;
             }
         }
 
-        GlobalFrame::$Frame[] = $var;
+        Frames::$GlobalFrame[] = $var;
         return true;
     }
 
-    public static function TypeChecker(DataTypeEnum $type, mixed $value): bool
+    /**public static function TypeChecker(DataTypeEnum $type, mixed $value): bool
     {
+        if (is_numeric($value))
+        {
+            return $type === DataTypeEnum::INT;
+        }
+        else if ($value == "true" || $value == "false")
+        {
+            return $type === DataTypeEnum::BOOL;
+        }
+
         return match (gettype($value)) {
-            "integer" => $type === DataTypeEnum::INT,
             "string" => $type === DataTypeEnum::STRING,
-            "boolean" => $type === DataTypeEnum::BOOL,
             "NULL" => $type === DataTypeEnum::NIL,
             default => false,
         };
-    }
+    }**/
 }

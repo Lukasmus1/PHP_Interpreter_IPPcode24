@@ -19,7 +19,7 @@ class ConGetSetOC implements IOpcodes
         $this->type = $type;
     }
 
-    public function Execute() : int
+    public function Execute(int $index) : int
     {
         $var1 = Tools::FindInFrame($this->var->Name);
         if ($var1 == null)
@@ -27,40 +27,48 @@ class ConGetSetOC implements IOpcodes
             return 54;
         }
 
-        if ($this->type == "getchar" || $this->type == "setchar")
+        if ($this->sym1 instanceof VarClass)
         {
-            if ($this->sym1 instanceof VarClass)
+            $var2 = Tools::FindInFrame($this->sym1->Name);
+            if ($var2 == null)
             {
-                $var2 = Tools::FindInFrame($this->sym1->Name);
-                if ($var2 == null)
-                {
-                    return 54;
-                }
+                return 54;
             }
-            else
-            {
-                $var2 = $this->sym1;
-            }
+        }
+        else
+        {
+            $var2 = $this->sym1;
+        }
 
-            if ($var2->Type != DataTypeEnum::STRING)
+        if ($this->sym2 instanceof VarClass)
+        {
+            $var3 = Tools::FindInFrame($this->sym2->Name);
+            if ($var3 == null)
+            {
+                return 54;
+            }
+        }
+        else
+        {
+            $var3 = $this->sym2;
+        }
+
+        if ($this->type == "concat")
+        {
+            if ($var2->Type != DataTypeEnum::STRING || $var3->Type != DataTypeEnum::STRING)
             {
                 return 53;
             }
 
-            if ($this->sym2 instanceof VarClass)
-            {
-                $var3 = Tools::FindInFrame($this->sym2->Name);
-                if ($var3 == null)
-                {
-                    return 54;
-                }
-            }
-            else
-            {
-                $var3 = $this->sym2;
-            }
+            $var1->Value = $var2->Value . $var3->Value;
+            $var1->Type = DataTypeEnum::STRING;
+            return 0;
+        }
 
-            if ($var3->Type != DataTypeEnum::INT)
+        if ($this->type == "getchar")
+        {
+
+            if ($var2->Type != DataTypeEnum::STRING || $var3->Type != DataTypeEnum::INT)
             {
                 return 53;
             }
@@ -76,8 +84,25 @@ class ConGetSetOC implements IOpcodes
             $var1->Value = $string[(int)$ind];
             $var1->Type = DataTypeEnum::STRING;
         }
+        else
+        {
+            if ($var2->Type != DataTypeEnum::INT || $var3->Type != DataTypeEnum::STRING)
+            {
+                return 53;
+            }
 
+            if (strlen((string)$var3->Value) != 1)
+            {
+                return 58;
+            }
 
+            if ($var2->Value < 0 || $var2->Value > strlen((string)$var1->Value) - 1)
+            {
+                return 58;
+            }
+
+            $var1->Value[(int)$var2->Value] = (string)$var3->Value;
+        }
         return 0;
     }
 }

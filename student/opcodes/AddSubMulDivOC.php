@@ -24,11 +24,8 @@ class AddSubMulDivOC implements IOpcodes
     }
 
 
-    public function Execute(): int
+    public function Execute(int $index): int
     {
-        $num1 = 0;
-        $num2 = 0;
-
         if ($this->sym1 instanceof VarClass)
         {
             $var1 = Tools::FindInFrame($this->sym1->Name);

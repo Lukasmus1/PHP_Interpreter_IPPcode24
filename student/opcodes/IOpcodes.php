@@ -4,5 +4,5 @@ namespace IPP\Student\opcodes;
 
 interface IOpcodes
 {
-    public function Execute() : int;
+    public function Execute(int $index) : int;
 }
