@@ -2,15 +2,12 @@
 
 namespace IPP\Student\opcodes;
 
-use IPP\Student\ExceptionClass;
-use IPP\Student\opcodes\IOpcodes;
-
 class CallOC implements IOpcodes
 {
     public string $label;
 
     /**
-     * @param IOpcodes[] $opcodes
+     * @var IOpcodes[] $opcodes
      */
     public array $opcodes;
 
@@ -23,6 +20,7 @@ class CallOC implements IOpcodes
     }
 
 
+    //Tato rekurzivní etoda funguje tak, že při nalezení "label" vykoná všechny instrukce od něho, tímto způsobem si nemusím ukládat číslo instrukce "call", na kterou se musím vracet
     public function Execute(int $index): int
     {
         for ($i = 0; $i < count($this->opcodes); $i++)

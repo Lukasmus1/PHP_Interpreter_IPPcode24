@@ -2,9 +2,6 @@
 
 namespace IPP\Student\opcodes;
 
-use IPP\Core\Exception\IntegrationException;
-use IPP\Student\Frames;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
 
@@ -14,13 +11,12 @@ class DefvarOC implements IOpcodes
 
     public function Execute(int $index): int
     {
-        if(Tools::PushToFrame($this->var))
+        $res = Tools::PushToFrame($this->var);
+        if($res != 0)
         {
-            return 0;
+            return $res;
         }
-        else
-        {
-            return 52;
-        }
+
+        return 0;
     }
 }

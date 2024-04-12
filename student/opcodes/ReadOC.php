@@ -4,7 +4,6 @@ namespace IPP\Student\opcodes;
 
 use IPP\Core\Interface\InputReader;
 use IPP\Student\enums\DataTypeEnum;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
 
@@ -21,10 +20,10 @@ class ReadOC implements IOpcodes
 
     public function Execute(int $index): int
     {
-        $var1 = Tools::FindInFrame($this->var->Name);
-        if ($var1 == null)
+        $var1 = Tools::FindInFrame($this->var);
+        if (is_numeric($var1))
         {
-            return 54;
+            return $var1;
         }
 
         switch ($this->type)

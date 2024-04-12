@@ -7,7 +7,7 @@ class LabelOC implements IOpcodes
     public string $name;
 
     /**
-     * @param IOpcodes[] $opcodes
+     * @var IOpcodes[] $opcodes
      */
     public array $opcodes;
 

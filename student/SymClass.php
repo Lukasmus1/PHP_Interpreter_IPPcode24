@@ -4,6 +4,7 @@ namespace IPP\Student;
 
 use IPP\Student\enums\DataTypeEnum;
 
+//Třída pro uchování symbolů pro instrukce
 class SymClass
 {
     public DataTypeEnum $Type;

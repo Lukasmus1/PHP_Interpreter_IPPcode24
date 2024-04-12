@@ -13,10 +13,10 @@ class ExitOC implements IOpcodes
     {
         if ($this->sym instanceof VarClass)
         {
-            $var = Tools::FindInFrame($this->sym->Name);
-            if ($var == null)
+            $var = Tools::FindInFrame($this->sym);
+            if (is_numeric($var))
             {
-                return 54;
+                return $var;
             }
         }
         else
@@ -33,6 +33,7 @@ class ExitOC implements IOpcodes
             return 57;
         }
 
+        //Pokud se má program ukončit s hodnotou 0, vrátí se z této metody hodnota -1, na kterou hlavní metoda v interpreteru reaguje
         if ((int)$var->Value == 0)
         {
             return -1;

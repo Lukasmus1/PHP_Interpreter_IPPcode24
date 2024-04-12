@@ -3,7 +3,6 @@
 namespace IPP\Student\opcodes;
 
 use IPP\Student\enums\DataTypeEnum;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\SymClass;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
@@ -15,18 +14,20 @@ class Int2CharOC implements IOpcodes
 
     public function Execute(int $index): int
     {
-        $var = Tools::FindInFrame($this->var->Name);
-        if ($var == null)
+        //Získání proměnné z rámce
+        $var = Tools::FindInFrame($this->var);
+        if (is_numeric($var))
         {
-            return 54;
+            return $var;
         }
 
+        //Kontrola jestli sym je proměnná nebo konstanta
         if ($this->sym instanceof VarClass)
         {
-            $var1 = Tools::FindInFrame($this->sym->Name);
-            if ($var1 == null)
+            $var1 = Tools::FindInFrame($this->sym);
+            if (is_numeric($var1))
             {
-                return 54;
+                return $var1;
             }
         }
         else

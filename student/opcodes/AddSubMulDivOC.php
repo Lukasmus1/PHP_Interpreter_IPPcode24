@@ -2,10 +2,7 @@
 
 namespace IPP\Student\opcodes;
 
-use _PHPStan_11268e5ee\Nette\Utils\Type;
-use IPP\Core\Exception\IntegrationException;
 use IPP\Student\enums\DataTypeEnum;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\SymClass;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
@@ -26,12 +23,13 @@ class AddSubMulDivOC implements IOpcodes
 
     public function Execute(int $index): int
     {
+        //Kontrola jestli sym1 je proměnná nebo konstanta
         if ($this->sym1 instanceof VarClass)
         {
-            $var1 = Tools::FindInFrame($this->sym1->Name);
-            if ($var1 == null)
+            $var1 = Tools::FindInFrame($this->sym1);
+            if (is_numeric($var1))
             {
-                return 54;
+                return $var1;
             }
             $this->sym1 = $var1;
             if (!is_numeric($this->sym1->Value))
@@ -47,12 +45,13 @@ class AddSubMulDivOC implements IOpcodes
         }
         $num1 = $this->sym1->Value;
 
+        //Kontrola jestli sym2 je proměnná nebo konstanta
         if ($this->sym2 instanceof VarClass)
         {
-            $var2 = Tools::FindInFrame($this->sym2->Name);
-            if ($var2 == null)
+            $var2 = Tools::FindInFrame($this->sym2);
+            if (is_numeric($var2))
             {
-                return 54;
+                return $var2;
             }
             $this->sym2 = $var2;
             if (!is_numeric($this->sym2->Value))
@@ -61,7 +60,6 @@ class AddSubMulDivOC implements IOpcodes
             }
         }
 
-        //TODO - FIX RETURNUNG ERR CODES (MIGHT WANNA REDESIGN EXECUTE FUNCTION)
         if ($this->sym2->Type != DataTypeEnum::INT)
         {
             return 53;
@@ -72,10 +70,11 @@ class AddSubMulDivOC implements IOpcodes
         }
         $num2 = $this->sym2->Value;
 
-        $var2 = Tools::FindInFrame($this->var->Name);
-        if ($var2 == null)
+        //Získání proměnné ze zásobníku
+        $var2 = Tools::FindInFrame($this->var);
+        if (is_numeric($var2))
         {
-            return 54;
+            return $var2;
         }
 
         switch ($this->type)

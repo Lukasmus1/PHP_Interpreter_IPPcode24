@@ -3,7 +3,6 @@
 namespace IPP\Student\opcodes;
 
 use IPP\Student\enums\DataTypeEnum;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\SymClass;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
@@ -15,7 +14,7 @@ class JumpIfOC implements IOpcodes
     public VarClass|SymClass $sym2;
     public string $type;
     /**
-     * @param IOpcodes[] $opcodes
+     * @var IOpcodes[] $opcodes
      */
     public array $opcodes;
 
@@ -35,19 +34,19 @@ class JumpIfOC implements IOpcodes
 
         if ($this->sym1 instanceof VarClass)
         {
-            $var1 = Tools::FindInFrame($this->sym1->Name);
-            if ($var1 == null)
+            $var1 = Tools::FindInFrame($this->sym1);
+            if (is_numeric($var1))
             {
-                return 54;
+                return $var1;
             }
         }
 
         if ($this->sym2 instanceof VarClass)
         {
-            $var2 = Tools::FindInFrame($this->sym2->Name);
-            if ($var2 == null)
+            $var2 = Tools::FindInFrame($this->sym2);
+            if (is_numeric($var2))
             {
-                return 54;
+                return $var2;
             }
         }
 
@@ -92,6 +91,7 @@ class JumpIfOC implements IOpcodes
         }
     }
 
+    //Pomocná metoda pro skákání na jinou instrukci
     private function Jump() : int
     {
         for ($i = 0; $i < count($this->opcodes); $i++)

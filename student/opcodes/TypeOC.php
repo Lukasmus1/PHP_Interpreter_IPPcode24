@@ -3,11 +3,9 @@
 namespace IPP\Student\opcodes;
 
 use IPP\Student\enums\DataTypeEnum;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\SymClass;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
-use function _PHPStan_11268e5ee\RingCentral\Psr7\str;
 
 class TypeOC implements IOpcodes
 {
@@ -15,19 +13,19 @@ class TypeOC implements IOpcodes
     public VarClass|SymClass $sym;
     public function Execute(int $index): int
     {
-        $var = Tools::FindInFrame($this->var->Name);
-        if ($var == null)
+        $var = Tools::FindInFrame($this->var);
+        if (is_numeric($var))
         {
-            return 54;
+            return $var;
         }
 
         $var->Type = DataTypeEnum::STRING;
         if ($this->sym instanceof VarClass)
         {
-            $var1 = Tools::FindInFrame($this->sym->Name);
-            if ($var1 == null)
+            $var1 = Tools::FindInFrame($this->sym);
+            if (is_numeric($var1))
             {
-                return 54;
+                return $var1;
             }
 
             if ($var1->Type == null)
@@ -53,6 +51,8 @@ class TypeOC implements IOpcodes
                 break;
             case DataTypeEnum::NIL:
                 $var->Value = "nil";
+                break;
+            default:
                 break;
         }
         return 0;

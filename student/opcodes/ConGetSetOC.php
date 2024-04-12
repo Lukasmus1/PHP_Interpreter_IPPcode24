@@ -21,18 +21,20 @@ class ConGetSetOC implements IOpcodes
 
     public function Execute(int $index) : int
     {
-        $var1 = Tools::FindInFrame($this->var->Name);
-        if ($var1 == null)
+        //Získání proměnné z rámce
+        $var1 = Tools::FindInFrame($this->var);
+        if (is_numeric($var1))
         {
-            return 54;
+            return $var1;
         }
 
+        //Kontrola jestli sym1 je proměnná nebo konstanta
         if ($this->sym1 instanceof VarClass)
         {
-            $var2 = Tools::FindInFrame($this->sym1->Name);
-            if ($var2 == null)
+            $var2 = Tools::FindInFrame($this->sym1);
+            if (is_numeric($var2))
             {
-                return 54;
+                return $var2;
             }
         }
         else
@@ -40,18 +42,21 @@ class ConGetSetOC implements IOpcodes
             $var2 = $this->sym1;
         }
 
+        //Kontrola jestli sym2 je proměnná nebo konstanta
         if ($this->sym2 instanceof VarClass)
         {
-            $var3 = Tools::FindInFrame($this->sym2->Name);
-            if ($var3 == null)
+            $var3 = Tools::FindInFrame($this->sym2);
+            if (is_numeric($var3))
             {
-                return 54;
+                return $var3;
             }
         }
         else
         {
             $var3 = $this->sym2;
         }
+
+        //Vykonání operace podle jejího názvu
 
         if ($this->type == "concat")
         {
@@ -101,7 +106,11 @@ class ConGetSetOC implements IOpcodes
                 return 58;
             }
 
-            $var1->Value[(int)$var2->Value] = (string)$var3->Value;
+            //Tahle kontrola tu je jenom pro phpstan
+            if (is_string($var1->Value))
+            {
+                $var1->Value[(int)$var2->Value] = (string)$var3->Value;
+            }
         }
         return 0;
     }

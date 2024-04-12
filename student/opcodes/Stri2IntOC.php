@@ -3,8 +3,6 @@
 namespace IPP\Student\opcodes;
 
 use IPP\Student\enums\DataTypeEnum;
-use IPP\Student\ExceptionClass;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\SymClass;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
@@ -17,18 +15,18 @@ class Stri2IntOC implements IOpcodes
 
     public function Execute(int $index): int
     {
-        $var = Tools::FindInFrame($this->var->Name);
-        if ($var == null)
+        $var = Tools::FindInFrame($this->var);
+        if (is_numeric($var))
         {
-            return 54;
+            return $var;
         }
 
         if ($this->sym1 instanceof VarClass)
         {
-            $var1 = Tools::FindInFrame($this->sym1->Name);
-            if ($var1 == null)
+            $var1 = Tools::FindInFrame($this->sym1);
+            if (is_numeric($var1))
             {
-                return 54;
+                return $var1;
             }
         }
         else
@@ -38,10 +36,10 @@ class Stri2IntOC implements IOpcodes
 
         if ($this->sym2 instanceof VarClass)
         {
-            $var2 = Tools::FindInFrame($this->sym2->Name);
-            if ($var2 == null)
+            $var2 = Tools::FindInFrame($this->sym2);
+            if (is_numeric($var2))
             {
-                return 54;
+                return $var2;
             }
             if (!is_numeric($var2->Value))
             {
@@ -64,7 +62,7 @@ class Stri2IntOC implements IOpcodes
         }
 
         $var->Type = DataTypeEnum::INT;
-        $var->Value = ord((string)$var1->Value[(int)($var2->Value)]);
+        $var->Value = ord(((string)$var1->Value)[(int)($var2->Value)]);
         return 0;
     }
 }

@@ -3,7 +3,6 @@
 namespace IPP\Student\opcodes;
 
 use IPP\Student\Frames;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\SymClass;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
@@ -16,10 +15,10 @@ class PushsOC implements IOpcodes
     {
         if ($this->sym instanceof VarClass)
         {
-            $var = Tools::FindInFrame($this->sym->Name);
-            if ($var == null)
+            $var = Tools::FindInFrame($this->sym);
+            if (is_numeric($var))
             {
-                return 54;
+                return $var;
             }
         }
         else
@@ -27,7 +26,7 @@ class PushsOC implements IOpcodes
             $var = $this->sym;
         }
 
-        array_push(Frames::$Frame, clone $var);
+        Frames::$Frame[] = clone $var;
         return 0;
     }
 }

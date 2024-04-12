@@ -2,14 +2,12 @@
 
 namespace IPP\Student\opcodes;
 
-use IPP\Student\opcodes\IOpcodes;
-
 class JumpOC implements IOpcodes
 {
     public string $name;
 
     /**
-     * @param IOpcodes[] $opcodes
+     * @var IOpcodes[] $opcodes
      */
     public array $opcodes;
 

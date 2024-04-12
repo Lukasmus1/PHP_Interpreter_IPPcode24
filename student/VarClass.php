@@ -5,6 +5,7 @@ namespace IPP\Student;
 use IPP\Student\enums\DataTypeEnum;
 use IPP\Student\enums\FramesEnum;
 
+//Třída pro uchování proměnných pro instrukce
 class VarClass
 {
     public FramesEnum $Frame;

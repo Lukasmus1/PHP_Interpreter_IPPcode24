@@ -2,9 +2,7 @@
 
 namespace IPP\Student\opcodes;
 
-use IPP\Core\Exception\IntegrationException;
 use IPP\Student\enums\DataTypeEnum;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\SymClass;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
@@ -16,19 +14,21 @@ class MoveOC implements IOpcodes
 
     public function Execute(int $index): int
     {
-        $var1 = Tools::FindInFrame($this->var->Name);
-        if ($var1 == null)
+        //Získání proměnné z rámce
+        $var1 = Tools::FindInFrame($this->var);
+        if (is_numeric($var1))
         {
-            return 54;
+            return $var1;
         }
         else
         {
+            //Kontrola jestli sym je proměnná nebo konstanta
             if ($this->sym instanceof VarClass)
             {
-                $var2 = Tools::FindInFrame($this->sym->Name);
-                if ($var2 == null)
+                $var2 = Tools::FindInFrame($this->sym);
+                if (is_numeric($var2))
                 {
-                    return 54;
+                    return $var2;
                 }
 
                 $var1->Value = $var2->Value;
@@ -36,7 +36,23 @@ class MoveOC implements IOpcodes
                 return 0;
             }
 
-            $var1->Value = $this->sym->Value;
+            switch ($this->sym->Type)
+            {
+                case DataTypeEnum::INT:
+                    $var1->Value = (int)$this->sym->Value;
+                    break;
+                case DataTypeEnum::BOOL:
+                    $var1->Value = filter_var($this->sym->Value, FILTER_VALIDATE_BOOLEAN);
+                    break;
+                case DataTypeEnum::STRING:
+                case DataTypeEnum::NIL:
+                    $var1->Value = $this->sym->Value;
+                    break;
+                default:
+                    //Tady se to nikdy nedostane
+                    return 59;
+            }
+
             $var1->Type = $this->sym->Type;
         }
         return 0;

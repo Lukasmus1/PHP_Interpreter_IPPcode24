@@ -4,7 +4,6 @@ namespace IPP\Student\opcodes;
 
 use IPP\Core\Interface\OutputWriter;
 use IPP\Student\enums\DataTypeEnum;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\SymClass;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
@@ -18,17 +17,17 @@ class DprintOC implements IOpcodes
     public function __construct(OutputWriter $out)
     {
         $this->outWriteErr = $out;
-        $sym = null;
     }
 
     public function Execute(int $index): int
     {
         if ($this->sym instanceof VarClass)
         {
-            $var = Tools::FindInFrame($this->sym->Name);
-            if ($var == null)
+            //Získání proměnné z rámce
+            $var = Tools::FindInFrame($this->sym);
+            if (is_numeric($var))
             {
-                return 54;
+                return $var;
             }
         }
         else
@@ -45,7 +44,7 @@ class DprintOC implements IOpcodes
                 $this->outWriteErr->writeString((string)$newString);
                 break;
             case DataTypeEnum::INT:
-                $this->outWriteErr->writeInt($var->Value);
+                $this->outWriteErr->writeInt((int)$var->Value);
                 break;
             case DataTypeEnum::BOOL:
                 $this->outWriteErr->writeBool(filter_var($var->Value, FILTER_VALIDATE_BOOLEAN));
@@ -53,6 +52,10 @@ class DprintOC implements IOpcodes
             case DataTypeEnum::NIL:
                 $this->outWriteErr->writeString("");
                 break;
+            default:
+                //Tady se to nikdy nedostane
+                return 59;
+
         }
         return 0;
     }

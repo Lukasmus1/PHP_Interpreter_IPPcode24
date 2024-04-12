@@ -3,7 +3,6 @@
 namespace IPP\Student\opcodes;
 
 use IPP\Student\enums\DataTypeEnum;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\SymClass;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
@@ -22,18 +21,20 @@ class AndOrNotOC implements IOpcodes
 
     public function Execute(int $index): int
     {
-        $var = Tools::FindInFrame($this->var->Name);
-        if ($var == null)
+        //Získání proměnné ze zásobníku
+        $var = Tools::FindInFrame($this->var);
+        if (is_numeric($var))
         {
-            return 54;
+            return $var;
         }
 
+        //Kontrola jestli sym1 je proměnná nebo konstanta
         if ($this->sym1 instanceof VarClass)
         {
-            $var1 = Tools::FindInFrame($this->sym1->Name);
-            if ($var1 == null)
+            $var1 = Tools::FindInFrame($this->sym1);
+            if (is_numeric($var1))
             {
-                return 54;
+                return $var1;
             }
         }
         else
@@ -41,12 +42,13 @@ class AndOrNotOC implements IOpcodes
             $var1 = $this->sym1;
         }
 
+        //Kontrola jestli sym2 je proměnná nebo konstanta
         if ($this->sym2 instanceof VarClass)
         {
-            $var2 = Tools::FindInFrame($this->sym2->Name);
-            if ($var2 == null)
+            $var2 = Tools::FindInFrame($this->sym2);
+            if (is_numeric($var2))
             {
-                return 54;
+                return $var2;
             }
         }
         else

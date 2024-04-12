@@ -3,7 +3,6 @@
 namespace IPP\Student\opcodes;
 
 use IPP\Student\Frames;
-use IPP\Student\opcodes\IOpcodes;
 use IPP\Student\Tools;
 use IPP\Student\VarClass;
 
@@ -13,10 +12,10 @@ class PopsOC implements IOpcodes
 
     public function Execute(int $index): int
     {
-        $var = Tools::FindInFrame($this->var->Name);
-        if ($var == null)
+        $var = Tools::FindInFrame($this->var);
+        if (is_numeric($var))
         {
-            return 54;
+            return $var;
         }
 
         $popped = array_pop(Frames::$Frame);
